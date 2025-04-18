@@ -88,7 +88,7 @@ export async function POST(request: Request) {
           model: myProvider.languageModel(selectedChatModel),
           system: systemPrompt({
             selectedChatModel,
-            userPreferences
+            userPreferences: userPreferences || undefined
           }),
           messages,
           maxSteps: 5,
