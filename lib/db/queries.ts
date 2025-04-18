@@ -419,3 +419,18 @@ export async function updateChatVisiblityById({
     throw error;
   }
 }
+
+export async function updateUserPassword(email: string, newPassword: string) {
+  const salt = genSaltSync(10);
+  const hash = hashSync(newPassword, salt);
+
+  try {
+    return await db
+      .update(user)
+      .set({ password: hash })
+      .where(eq(user.email, email));
+  } catch (error) {
+    console.error('Failed to update user password');
+    throw error;
+  }
+}

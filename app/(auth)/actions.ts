@@ -1,10 +1,11 @@
 'use server';
 
 import { z } from 'zod';
+import { compareSync } from 'bcrypt-ts';
 
-import { createUser, getUser } from '@/lib/db/queries';
+import { createUser, getUser, updateUserPassword } from '@/lib/db/queries';
 
-import { signIn } from './auth';
+import { signIn, auth } from './auth';
 
 const authFormSchema = z.object({
   email: z.string().email(),
@@ -72,6 +73,63 @@ export const register = async (
       password: validatedData.password,
       redirect: false,
     });
+
+    return { status: 'success' };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { status: 'invalid_data' };
+    }
+
+    return { status: 'failed' };
+  }
+};
+
+export interface ChangePasswordActionState {
+  status: 'idle' | 'in_progress' | 'success' | 'failed' | 'invalid_data' | 'wrong_password';
+}
+
+const changePasswordSchema = z.object({
+  currentPassword: z.string().min(6),
+  newPassword: z.string().min(6),
+  confirmPassword: z.string().min(6),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+export const changePassword = async (
+  _: ChangePasswordActionState,
+  formData: FormData,
+): Promise<ChangePasswordActionState> => {
+  try {
+    const validatedData = changePasswordSchema.parse({
+      currentPassword: formData.get('currentPassword'),
+      newPassword: formData.get('newPassword'),
+      confirmPassword: formData.get('confirmPassword'),
+    });
+
+    const session = await auth();
+
+    if (!session?.user?.email) {
+      return { status: 'failed' };
+    }
+
+    // Get user to verify current password
+    const [user] = await getUser(session.user.email);
+
+    if (!user) {
+      return { status: 'failed' };
+    }
+
+    // Verify current password
+    const isCurrentPasswordValid = compareSync(validatedData.currentPassword, user.password || '');
+
+    if (!isCurrentPasswordValid) {
+      return { status: 'wrong_password' };
+    }
+
+    // Update password
+    await updateUserPassword(session.user.email, validatedData.newPassword);
 
     return { status: 'success' };
   } catch (error) {
