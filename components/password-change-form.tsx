@@ -1,8 +1,6 @@
 'use client';
 
-import { useFormState } from 'react-dom';
-import Form from 'next/form';
-
+import { useActionState } from 'react';
 import { ChangePasswordActionState, changePassword } from '@/app/(auth)/actions';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -10,13 +8,13 @@ import { Input } from '@/components/ui/input';
 import { WarningIcon, CheckCircleFillIcon } from './icons';
 
 export default function PasswordChangeForm() {
-  const [state, formAction] = useFormState<ChangePasswordActionState>(
+  const [state, formAction] = useActionState<ChangePasswordActionState, FormData>(
     changePassword,
     { status: 'idle' }
   );
 
   return (
-    <Form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-4">
       {state.status === 'success' && (
         <div className="flex items-center gap-2 rounded bg-green-50 p-3 text-sm text-green-600 dark:bg-green-950 dark:text-green-400">
           <CheckCircleFillIcon size={16} />
@@ -88,6 +86,6 @@ export default function PasswordChangeForm() {
       >
         {state.status === 'in_progress' ? 'Updating...' : 'Update Password'}
       </Button>
-    </Form>
+    </form>
   );
 }
