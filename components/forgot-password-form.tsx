@@ -60,7 +60,7 @@ export function ForgotPasswordForm() {
           placeholder="Enter your email address"
         />
         <p className="text-xs text-muted-foreground">
-          We'll send a password reset link to this email.
+          We&apos;ll send a password reset link to this email.
         </p>
       </div>
 

@@ -23,7 +23,7 @@ export default async function PasswordSettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Forgot Password</CardTitle>
-          <CardDescription>Reset your password if you've forgotten it</CardDescription>
+          <CardDescription>Reset your password if you&apos;ve forgotten it</CardDescription>
         </CardHeader>
         <CardContent>
           <ForgotPasswordForm />

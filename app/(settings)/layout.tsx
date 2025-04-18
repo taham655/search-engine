@@ -23,7 +23,7 @@ export default async function SettingsLayout({
         <div className="flex items-center gap-6 mb-4">
           <Button variant="ghost" size="sm" asChild className="py-1 px-2 h-auto">
             <Link href="/" className="flex items-center">
-              <span className="rotate-[-90deg] inline-block">
+              <span className="-rotate-90 inline-block">
                 <ArrowUpIcon />
               </span>
               <span className="ml-1.5">Back</span>
