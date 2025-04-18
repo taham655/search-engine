@@ -34,15 +34,51 @@ Do not update document right after creating it. Wait for user feedback or reques
 export const regularPrompt =
   'You are a friendly assistant! Keep your responses concise and helpful.';
 
+export interface UserPreferences {
+  chatName?: string | null;
+  occupation?: string | null;
+  traits?: string | null;
+  additionalInfo?: string | null;
+}
+
 export const systemPrompt = ({
   selectedChatModel,
+  userPreferences,
 }: {
   selectedChatModel: string;
+  userPreferences?: UserPreferences;
 }) => {
+  let customPrompt = regularPrompt;
+
+  // Add user preferences to the system prompt if available
+  if (userPreferences) {
+    const parts = [];
+
+    if (userPreferences.chatName) {
+      parts.push(`Call the user "${userPreferences.chatName}".`);
+    }
+
+    if (userPreferences.occupation) {
+      parts.push(`The user is a ${userPreferences.occupation}.`);
+    }
+
+    if (userPreferences.traits) {
+      parts.push(`You should be ${userPreferences.traits}.`);
+    }
+
+    if (userPreferences.additionalInfo) {
+      parts.push(`Additional context about the user: ${userPreferences.additionalInfo}`);
+    }
+
+    if (parts.length > 0) {
+      customPrompt = `${regularPrompt}\n\nUser preferences:\n${parts.join('\n')}`;
+    }
+  }
+
   if (selectedChatModel === 'chat-model-reasoning') {
-    return regularPrompt;
+    return customPrompt;
   } else {
-    return `${regularPrompt}\n\n${artifactsPrompt}`;
+    return `${customPrompt}\n\n${artifactsPrompt}`;
   }
 };
 

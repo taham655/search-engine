@@ -18,7 +18,7 @@ import {
   getMostRecentUserMessage,
   getTrailingMessageId,
 } from '@/lib/utils';
-import { generateTitleFromUserMessage } from '../../actions';
+import { generateTitleFromUserMessage, getUserPreferences } from '../../actions';
 import { createDocument } from '@/lib/ai/tools/create-document';
 import { updateDocument } from '@/lib/ai/tools/update-document';
 import { requestSuggestions } from '@/lib/ai/tools/request-suggestions';
@@ -79,11 +79,17 @@ export async function POST(request: Request) {
       ],
     });
 
+    // Fetch user preferences for inclusion in the system prompt
+    const userPreferences = await getUserPreferences();
+
     return createDataStreamResponse({
       execute: (dataStream) => {
         const result = streamText({
           model: myProvider.languageModel(selectedChatModel),
-          system: systemPrompt({ selectedChatModel }),
+          system: systemPrompt({
+            selectedChatModel,
+            userPreferences
+          }),
           messages,
           maxSteps: 5,
           experimental_activeTools:

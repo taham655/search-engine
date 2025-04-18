@@ -17,6 +17,19 @@ export const user = pgTable('User', {
   password: varchar('password', { length: 64 }),
 });
 
+export const userPreferences = pgTable('user_preferences', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => user.id),
+  chatName: varchar('chatName', { length: 100 }),
+  occupation: varchar('occupation', { length: 100 }),
+  traits: text('traits'),
+  additionalInfo: text('additionalInfo'),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+});
+
 export type User = InferSelectModel<typeof user>;
 
 export const chat = pgTable('Chat', {
