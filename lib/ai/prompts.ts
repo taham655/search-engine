@@ -32,7 +32,7 @@ Do not update document right after creating it. Wait for user feedback or reques
 `;
 
 export const regularPrompt =
-  'You are a friendly assistant! Keep your responses concise and helpful.';
+  'You are a friendly assistant! Keep your responses concise and helpful. You have web search capability, so if a user asks a question that requires up-to-date information or facts from the internet, please use your web search to provide accurate information.';
 
 export interface UserPreferences {
   chatName?: string | null;
