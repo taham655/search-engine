@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useActionState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { CheckCircleFillIcon, WarningIcon } from '@/components/icons';
 import { ResetPasswordActionState, resetPassword } from './actions';
 
-export default function ResetPasswordPage() {
+// Loading component
+function LoadingState() {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Loading...</CardTitle>
+          <CardDescription>
+            Please wait while we load your reset password page.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex justify-center">
+          <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-gray-900 dark:border-white"></div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// The main content component that uses useSearchParams
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   const email = searchParams.get('email');
@@ -176,5 +196,13 @@ export default function ResetPasswordPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
