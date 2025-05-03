@@ -16,21 +16,21 @@ export async function setupDatabase() {
     console.log('Connected to database');
 
     // Check if the User table has the reset token fields
-    const checkResult = await sql`
+    const checkResult = await db.execute(sql`
       SELECT column_name
       FROM information_schema.columns
       WHERE table_name='User' AND column_name='resetToken'
-    `.execute(db);
+    `);
 
     // If column doesn't exist, add it
-    if (!checkResult.rows.length) {
+    if (!checkResult.length) {
       console.log('Adding resetToken and resetTokenExpiry columns to User table...');
 
-      await sql`
+      await db.execute(sql`
         ALTER TABLE "User"
         ADD COLUMN IF NOT EXISTS "resetToken" VARCHAR(256),
         ADD COLUMN IF NOT EXISTS "resetTokenExpiry" TIMESTAMP
-      `.execute(db);
+      `);
 
       console.log('Reset token fields added to User table successfully');
     } else {
