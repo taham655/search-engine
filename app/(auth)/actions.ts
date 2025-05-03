@@ -3,7 +3,8 @@
 import { z } from 'zod';
 import { compareSync } from 'bcrypt-ts';
 
-import { createUser, getUser, updateUserPassword } from '@/lib/db/queries';
+import { createUser, getUser, updateUserPassword, createPasswordResetToken } from '@/lib/db/queries';
+import { sendPasswordResetEmail } from '@/lib/email';
 
 import { signIn, auth } from './auth';
 
@@ -137,6 +138,58 @@ export const changePassword = async (
       return { status: 'invalid_data' };
     }
 
+    return { status: 'failed' };
+  }
+};
+
+export interface ForgotPasswordActionState {
+  status: 'idle' | 'in_progress' | 'success' | 'failed' | 'invalid_data' | 'user_not_found';
+}
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+export const forgotPassword = async (
+  _: ForgotPasswordActionState,
+  formData: FormData,
+): Promise<ForgotPasswordActionState> => {
+  try {
+    const validatedData = forgotPasswordSchema.parse({
+      email: formData.get('email'),
+    });
+
+    // Check if user exists
+    const [user] = await getUser(validatedData.email);
+
+    if (!user) {
+      // Don't reveal user existence for security, but log it
+      console.log(`Password reset requested for non-existent email: ${validatedData.email}`);
+      return { status: 'success' }; // Return success for security reasons
+    }
+
+    // Generate reset token
+    const { resetToken, resetTokenExpiry } = await createPasswordResetToken(validatedData.email);
+
+    // Send reset email
+    const { success } = await sendPasswordResetEmail(
+      validatedData.email,
+      resetToken,
+      resetTokenExpiry
+    );
+
+    if (!success) {
+      console.error(`Failed to send password reset email to ${validatedData.email}`);
+      return { status: 'failed' };
+    }
+
+    return { status: 'success' };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { status: 'invalid_data' };
+    }
+
+    console.error('Password reset error:', error);
     return { status: 'failed' };
   }
 };

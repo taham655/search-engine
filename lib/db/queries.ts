@@ -14,6 +14,7 @@ import {
 } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
+import crypto from 'crypto';
 
 import {
   user,
@@ -431,6 +432,78 @@ export async function updateUserPassword(email: string, newPassword: string) {
       .where(eq(user.email, email));
   } catch (error) {
     console.error('Failed to update user password');
+    throw error;
+  }
+}
+
+export async function createPasswordResetToken(email: string) {
+  try {
+    // Generate a random token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    // Set expiry to 1 hour from now
+    const resetTokenExpiry = new Date();
+    resetTokenExpiry.setHours(resetTokenExpiry.getHours() + 1);
+
+    // Update the user record
+    await db
+      .update(user)
+      .set({
+        resetToken,
+        resetTokenExpiry,
+      })
+      .where(eq(user.email, email));
+
+    return { resetToken, resetTokenExpiry };
+  } catch (error) {
+    console.error('Failed to create password reset token', error);
+    throw error;
+  }
+}
+
+export async function verifyPasswordResetToken(email: string, token: string) {
+  try {
+    const [userRecord] = await db
+      .select()
+      .from(user)
+      .where(eq(user.email, email));
+
+    if (!userRecord) {
+      return { isValid: false, reason: 'user_not_found' };
+    }
+
+    if (!userRecord.resetToken || userRecord.resetToken !== token) {
+      return { isValid: false, reason: 'invalid_token' };
+    }
+
+    if (!userRecord.resetTokenExpiry || new Date() > userRecord.resetTokenExpiry) {
+      return { isValid: false, reason: 'token_expired' };
+    }
+
+    return { isValid: true };
+  } catch (error) {
+    console.error('Failed to verify password reset token', error);
+    throw error;
+  }
+}
+
+export async function resetPasswordWithToken(email: string, newPassword: string) {
+  const salt = genSaltSync(10);
+  const hash = hashSync(newPassword, salt);
+
+  try {
+    await db
+      .update(user)
+      .set({
+        password: hash,
+        resetToken: null,
+        resetTokenExpiry: null,
+      })
+      .where(eq(user.email, email));
+
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to reset password with token', error);
     throw error;
   }
 }

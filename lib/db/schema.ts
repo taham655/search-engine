@@ -15,6 +15,8 @@ export const user = pgTable('User', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
   email: varchar('email', { length: 64 }).notNull(),
   password: varchar('password', { length: 64 }),
+  resetToken: varchar('resetToken', { length: 256 }),
+  resetTokenExpiry: timestamp('resetTokenExpiry'),
 });
 
 export const userPreferences = pgTable('user_preferences', {
