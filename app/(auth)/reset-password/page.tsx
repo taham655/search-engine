@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import { useActionState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -16,7 +17,17 @@ function LoadingState() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <Card className="w-full max-w-md">
-        <CardHeader>
+        <CardHeader className="flex flex-col items-center">
+          <div className="flex justify-center mb-2">
+            <Image
+              src="/boogle_fl.png"
+              alt="Boogle Logo"
+              width={96}
+              height={96}
+              priority
+              className="object-contain"
+            />
+          </div>
           <CardTitle>Loading...</CardTitle>
           <CardDescription>
             Please wait while we load your reset password page.
@@ -75,7 +86,17 @@ function ResetPasswordContent() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
         <Card className="w-full max-w-md">
-          <CardHeader>
+          <CardHeader className="flex flex-col items-center">
+            <div className="flex justify-center mb-2">
+              <Image
+                src="/boogle_fl.png"
+                alt="Boogle Logo"
+                width={96}
+                height={96}
+                priority
+                className="object-contain"
+              />
+            </div>
             <CardTitle>Invalid Reset Link</CardTitle>
             <CardDescription>
               This password reset link appears to be invalid or expired.
@@ -98,8 +119,18 @@ function ResetPasswordContent() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Reset Your Password</CardTitle>
+        <CardHeader className="flex flex-col items-center">
+          <div className="flex justify-center mb-2">
+            <Image
+              src="/boogle_fl.png"
+              alt="Boogle Logo"
+              width={96}
+              height={96}
+              priority
+              className="object-contain"
+            />
+          </div>
+          <CardTitle>Reset Your Boogle Password</CardTitle>
           <CardDescription>
             Enter a new password for your account.
           </CardDescription>

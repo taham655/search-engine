@@ -46,27 +46,60 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-dvh w-screen items-start pt-12 md:pt-0 md:items-center justify-center bg-background">
-      <div className="w-full max-w-md overflow-hidden rounded-2xl flex flex-col gap-12">
-        <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
-          <h3 className="text-xl font-semibold dark:text-zinc-50">Sign In</h3>
-          <p className="text-sm text-gray-500 dark:text-zinc-400">
-            Use your email and password to sign in
-          </p>
+    <div className="flex h-dvh w-screen bg-gradient-to-b from-background to-muted">
+      <div className="flex items-center justify-center w-full">
+        <div className="w-full max-w-md p-8 overflow-hidden rounded-2xl shadow-lg bg-background border border-zinc-200 dark:border-zinc-800">
+          <div className="flex flex-col items-center justify-center gap-6 text-center">
+            <div className="flex justify-center transition-transform hover:scale-105">
+              <img
+                src="/logos/boogle_1.webp"
+                alt="Boogle Logo"
+                width={160}
+                height={160}
+                className="object-contain drop-shadow-sm"
+              />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">Sign In</h3>
+              <p className="text-sm text-gray-600 dark:text-zinc-400">
+                Access your Boogle search engine and discover the world
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <AuthForm action={handleSubmit} defaultEmail={email}>
+              <SubmitButton isSuccessful={isSuccessful} className="w-full mt-2">Sign In</SubmitButton>
+
+              <div className="mt-4 text-center">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-primary/80 hover:text-primary hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
+              <div className="relative mt-6 mb-2">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300 dark:border-zinc-700"></div>
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="px-2 bg-background text-gray-500 dark:text-zinc-500">Don't have an account?</span>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Link
+                  href="/register"
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  Sign up for free
+                </Link>
+              </div>
+            </AuthForm>
+          </div>
         </div>
-        <AuthForm action={handleSubmit} defaultEmail={email}>
-          <SubmitButton isSuccessful={isSuccessful}>Sign in</SubmitButton>
-          <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
-            {"Don't have an account? "}
-            <Link
-              href="/register"
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-            >
-              Sign up
-            </Link>
-            {' for free.'}
-          </p>
-        </AuthForm>
       </div>
     </div>
   );

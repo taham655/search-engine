@@ -2,6 +2,7 @@
 
 import type { User } from 'next-auth';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 import { PlusIcon } from '@/components/icons';
 import { SidebarHistory } from '@/components/sidebar-history';
@@ -34,9 +35,13 @@ export function AppSidebar({ user }: { user: User | undefined }) {
               }}
               className="flex flex-row gap-3 items-center"
             >
-              <span className="text-lg font-semibold px-2 hover:bg-muted rounded-md cursor-pointer">
-                Boogle
-              </span>
+              <Image
+                src="/logos/boogle_1.webp"
+                alt="Boogle Logo"
+                width={90}
+                height={28}
+                className="px-2 hover:bg-muted rounded-md cursor-pointer"
+              />
             </Link>
             <Tooltip>
               <TooltipTrigger asChild>
