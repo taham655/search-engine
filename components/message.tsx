@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { memo, useState } from 'react';
 import type { Vote } from '@/lib/db/schema';
 import { DocumentToolCall, DocumentToolResult } from './document';
-import { PencilEditIcon, SparklesIcon } from './icons';
+import { PencilEditIcon, SparklesIcon, EyeOffIcon } from './icons';
 import { Markdown } from './markdown';
 import { PreviewAttachment } from './preview-attachment';
 import { Weather } from './weather';
@@ -27,6 +27,7 @@ const PurePreviewMessage = ({
   setMessages,
   reload,
   isReadonly,
+  isIncognito = false,
 }: {
   chatId: string;
   message: UIMessage;
@@ -35,6 +36,7 @@ const PurePreviewMessage = ({
   setMessages: UseChatHelpers['setMessages'];
   reload: UseChatHelpers['reload'];
   isReadonly: boolean;
+  isIncognito?: boolean;
 }) => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
 
@@ -122,6 +124,12 @@ const PurePreviewMessage = ({
                             message.role === 'user',
                         })}
                       >
+                        {isIncognito && message.role === 'user' && (
+                          <div className="flex items-center text-xs text-muted-foreground gap-1 mb-1">
+                            <EyeOffIcon size={12} />
+                            <span>Incognito message</span>
+                          </div>
+                        )}
                         <Markdown>{part.text}</Markdown>
                       </div>
                     </div>
@@ -226,6 +234,7 @@ export const PreviewMessage = memo(
     if (prevProps.message.id !== nextProps.message.id) return false;
     if (!equal(prevProps.message.parts, nextProps.message.parts)) return false;
     if (!equal(prevProps.vote, nextProps.vote)) return false;
+    if (prevProps.isIncognito !== nextProps.isIncognito) return false;
 
     return true;
   },

@@ -2,6 +2,7 @@ import { Toaster } from 'sonner';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
+import { IncognitoProvider } from '@/components/incognito-provider';
 
 import './globals.css';
 
@@ -80,8 +81,10 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Toaster position="top-center" />
-          {children}
+          <IncognitoProvider>
+            <Toaster position="top-center" />
+            {children}
+          </IncognitoProvider>
         </ThemeProvider>
       </body>
     </html>

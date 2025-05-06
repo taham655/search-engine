@@ -14,6 +14,7 @@ import { useArtifactSelector } from '@/hooks/use-artifact';
 import { toast } from 'sonner';
 import { unstable_serialize } from 'swr/infinite';
 import { getChatHistoryPaginationKey } from './sidebar-history';
+import { useIncognito } from './incognito-provider';
 
 export function Chat({
   id,
@@ -27,6 +28,7 @@ export function Chat({
   isReadonly: boolean;
 }) {
   const { mutate } = useSWRConfig();
+  const { isIncognito } = useIncognito();
 
   const {
     messages,
@@ -40,13 +42,15 @@ export function Chat({
     reload,
   } = useChat({
     id,
-    body: { id, selectedChatModel: selectedChatModel },
+    body: { id, selectedChatModel, isIncognito },
     initialMessages,
     experimental_throttle: 100,
     sendExtraMessageFields: true,
     generateId: generateUUID,
     onFinish: () => {
-      mutate(unstable_serialize(getChatHistoryPaginationKey));
+      if (!isIncognito) {
+        mutate(unstable_serialize(getChatHistoryPaginationKey));
+      }
     },
     onError: () => {
       toast.error('An error occurred, please try again!');
@@ -54,7 +58,7 @@ export function Chat({
   });
 
   const { data: votes } = useSWR<Array<Vote>>(
-    messages.length >= 2 ? `/api/vote?chatId=${id}` : null,
+    messages.length >= 2 && !isIncognito ? `/api/vote?chatId=${id}` : null,
     fetcher,
   );
 
@@ -68,6 +72,7 @@ export function Chat({
           chatId={id}
           selectedModelId={selectedChatModel}
           isReadonly={isReadonly}
+          isIncognito={isIncognito}
         />
 
         <Messages
@@ -79,6 +84,7 @@ export function Chat({
           reload={reload}
           isReadonly={isReadonly}
           isArtifactVisible={isArtifactVisible}
+          isIncognito={isIncognito}
         />
 
         <form className="flex mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 w-full md:max-w-3xl">
