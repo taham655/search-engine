@@ -56,12 +56,12 @@ function PureChatHeader({
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex items-center gap-1 rounded-full bg-secondary px-2.5 py-0.5 text-xs font-semibold">
-                <EyeOff className="w-3 h-3" />
+                <EyeOff className="size-3" />
                 <span>Incognito</span>
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              Incognito mode enabled. Chat history won't be saved.
+              Incognito mode enabled. Chat history won&apos;t be saved.
             </TooltipContent>
           </Tooltip>
         )}

@@ -62,7 +62,7 @@ export function SidebarUserNav({ user }: { user: User }) {
             >
               <div className="flex items-center">
                 {isIncognito ? 'Disable' : 'Enable'} incognito mode
-                {isIncognito && <span className="ml-2 h-2 w-2 rounded-full bg-green-500"></span>}
+                {isIncognito && <span className="ml-2 size-2 rounded-full bg-green-500"></span>}
               </div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
