@@ -19,7 +19,7 @@ function LoadingState() {
         <CardHeader className="flex flex-col items-center">
           <div className="flex justify-center mb-2">
             <Image
-              src="/boogle_fl.png"
+              src="/logos/boogle_1.webp"
               alt="Boogle Logo"
               width={96}
               height={96}
