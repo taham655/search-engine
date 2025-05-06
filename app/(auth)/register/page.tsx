@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useActionState, useEffect, useState } from 'react';
+import Image from 'next/image';
 
 import { AuthForm } from '@/components/auth-form';
 import { SubmitButton } from '@/components/submit-button';
@@ -52,7 +53,7 @@ export default function Page() {
         <div className="w-full max-w-md p-8 overflow-hidden rounded-2xl shadow-lg bg-background border border-zinc-200 dark:border-zinc-800">
           <div className="flex flex-col items-center justify-center gap-6 text-center">
             <div className="flex justify-center transition-transform hover:scale-105">
-              <img
+              <Image
                 src="/logos/boogle_1.webp"
                 alt="Boogle Logo"
                 width={160}

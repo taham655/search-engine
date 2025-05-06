@@ -1,8 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useState, useEffect, Suspense } from 'react';
-import { useActionState } from 'react';
+import { useState, useEffect, Suspense, useActionState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -34,7 +33,7 @@ function LoadingState() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center">
-          <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-gray-900 dark:border-white"></div>
+          <div className="size-6 animate-spin rounded-full border-b-2 border-gray-900 dark:border-white"></div>
         </CardContent>
       </Card>
     </div>
